@@ -20,7 +20,7 @@ func main() {
 	header, err := flowClient.GetLatestBlockHeader(ctx, true)
 	panicIfError(err)
 
-	startingHeight := header.Height - 100
+	startingHeight := header.Height - 10
 	fmt.Printf("Starting block height: %d\n", startingHeight)
 
 	flowChan, errChan, initErr := flowClient.SubscribeExecutionDataByBlockHeight(ctx, startingHeight)

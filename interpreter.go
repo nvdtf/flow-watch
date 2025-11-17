@@ -17,15 +17,15 @@ type InterpreterResponse struct {
 
 func runTxInterpreter() {
 	for {
-		for hash, utx := range uniqueTransactions {
+		for _, utx := range uniqueTransactions {
 			if utx.Count > 1 && utx.Description == nil {
 				interpreterResponse := generateDescription(utx.Script)
 				// interpreterResponse := mockResponse()
 				utx.Description = &interpreterResponse
-				uniqueTransactions[hash] = utx
-				fmt.Printf("[Interpreter] ID: %s, Count: %d, Description: %+v\n", utx.LastObservedId, utx.Count, interpreterResponse)
+				fmt.Printf("[Interpreter - New Template] ID: %s, Count: %d, Description: %+v\n", utx.LastObservedId, utx.Count, interpreterResponse)
 			}
 		}
+		printTemplatedPercentage()
 		time.Sleep(1 * time.Second)
 	}
 
@@ -91,4 +91,17 @@ func cleanJSONResponse(response string) string {
 	response = strings.TrimPrefix(response, "```json")
 	response = strings.TrimSuffix(response, "```")
 	return response
+}
+
+func printTemplatedPercentage() {
+	totalTransactions := len(transactions)
+	templated := 0
+	for _, tx := range transactions {
+		if tx.TxType.Description == nil {
+			continue
+		}
+		templated++
+	}
+	percentage := float64(templated) / float64(totalTransactions) * 100
+	fmt.Printf("[Interpreter - %.2f%%] Transactions: %d, Templated: %d, Unique Templates: %d\n", percentage, totalTransactions, templated, len(uniqueTransactions))
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type UniqueTransaction struct {
-	Count          int                  `json:"count"`
+	Count          int                  `json:"-"`
 	Description    *InterpreterResponse `json:"description"`
 	LastObservedId string               `json:"-"`
 	Script         string               `json:"-"`
@@ -30,7 +30,7 @@ var TX_HASH_EXCLUDE_LIST = []string{
 	"b24cb88aa47956eeef7e2cfde323788968c2a048867e5e2a3d9b4603c5425091", // EVM runner
 }
 
-var uniqueTransactions = make(map[[32]byte]UniqueTransaction)
+var uniqueTransactions = make(map[[32]byte]*UniqueTransaction)
 var transactions = []Transaction{}
 
 func storeNewTx(tx *flow.Transaction, height uint64) {
@@ -45,9 +45,8 @@ func storeNewTx(tx *flow.Transaction, height uint64) {
 	if exists {
 		utx.Count++
 		utx.LastObservedId = tx.ID().String()
-		uniqueTransactions[scriptHash] = utx
 	} else {
-		utx = UniqueTransaction{
+		utx = &UniqueTransaction{
 			Count:          1,
 			Description:    nil,
 			LastObservedId: tx.ID().String(),
@@ -58,7 +57,7 @@ func storeNewTx(tx *flow.Transaction, height uint64) {
 	transactions = append(transactions, Transaction{
 		Height: height,
 		User:   tx.Authorizers[0].String(),
-		TxType: &utx,
+		TxType: utx,
 	})
 }
 
