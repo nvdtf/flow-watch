@@ -12,15 +12,20 @@ import (
 const summarizerSystemPrompt = `
 	You are a data analyst that provides a high level executive summary of user actions on Flow blockchain using transactions conudcted by users.
 	You should examine the list of transactions and find interesting patterns and trends.
+	The summary should be a single paragraph consisting of 10 sentences max or less. Be concise and to the point.
+	Do not mention block heights in your summary because the user cannot understand what that means.
+	Do not use markdown or backticks in your response.
 	This is the JSON input format for list of transactions:
-	{
-		"height": "uint64",
-		"user": "string",
-		"tx_type": {
-			"title": "string",
-			"description": "string"
+	[
+		{
+			"height": "uint64",
+			"user": "string",
+			"tx_type": {
+				"title": "string",
+				"description": "string"
+			}
 		}
-	}
+	]
 	Here's a breakdown of fields in the JSON schema:
 	- height: The height of the transaction. Transaction heights are the timestamps of the transactions. 1 height = 1 second.
 	- user: The address of the user who conducted the transaction.
@@ -28,10 +33,7 @@ const summarizerSystemPrompt = `
 		- title: A short title of the user action of the transaction.
 		- description: A short description of the user action of the transaction.
 
-	The summary should be a single paragraph consisting of 10 sentences max or less. Be concise and to the point.
-	The sentences used should summarize most of important data without missing any important details.
-	Do not use markdown or backticks in your response.
-	Do not use more than 1 sentence for each trend or pattern you find.
+	The output format is a single paragraph summarizing the patterns and trends in the data.
 `
 
 const summarizerUserPrompt = `
@@ -50,7 +52,7 @@ func runTxSummarizer() {
 }
 
 func generateSummary(transactions []Transaction) {
-	llm, err := anthropic.New(anthropic.WithModel("claude-haiku-4-5"))
+	llm, err := anthropic.New(anthropic.WithModel("claude-sonnet-4-5"))
 	panicIfError(err)
 	transactionsJSON, err := json.Marshal(transactions)
 	panicIfError(err)

@@ -102,6 +102,12 @@ func printTemplatedPercentage() {
 		}
 		templated++
 	}
+	uniqueTemplates := 0
+	for _, tx := range uniqueTransactions {
+		if tx.Description != nil {
+			uniqueTemplates++
+		}
+	}
 	percentage := float64(templated) / float64(totalTransactions) * 100
-	fmt.Printf("[Interpreter - %.2f%%] Transactions: %d, Templated: %d, Unique Templates: %d\n", percentage, totalTransactions, templated, len(uniqueTransactions))
+	fmt.Printf("[Interpreter - %.2f%%] Transactions: %d, Templated: %d, Unique Templates: %d\n", percentage, totalTransactions, templated, uniqueTemplates)
 }
