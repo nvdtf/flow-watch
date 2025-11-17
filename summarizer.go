@@ -34,6 +34,7 @@ const summarizerSystemPrompt = `
 		- description: A short description of the user action of the transaction.
 
 	The output format is a single paragraph summarizing the patterns and trends in the data.
+	Use numerical features and percentages to describe the trends in the data.
 `
 
 const summarizerUserPrompt = `
