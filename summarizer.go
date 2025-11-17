@@ -10,9 +10,9 @@ import (
 )
 
 const summarizerSystemPrompt = `
-	You are a data analyst that provides a high level executive summary of user actions on Flow blockchain using transactions conudcted by users.
+	You are a data analyst that provides a high level summary of user actions on Flow blockchain using transactions conudcted by users.
 	You should examine the list of transactions and find interesting patterns and trends.
-	The summary should be a single paragraph consisting of 10 sentences max or less. Be concise and to the point.
+	The summary should be a single paragraph consisting of 4 sentences max or less. Be concise and to the point.
 	Do not mention block heights in your summary because the user cannot understand what that means.
 	Do not use markdown or backticks in your response.
 	This is the JSON input format for list of transactions:
@@ -77,5 +77,5 @@ func generateSummary(transactions []Transaction) {
 		panic("No response choices returned")
 	}
 	responseText := response.Choices[0].Content
-	fmt.Printf("[Summarizer] Summary: %s\n", responseText)
+	fmt.Printf("[Summarizer] Summary (%d transactions): %s\n", len(transactions), responseText)
 }
